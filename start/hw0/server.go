@@ -28,18 +28,10 @@ func (s* Server) CreateServer() error{
 
 func handleClient (connection net.Conn) {
 	defer connection.Close()
-	response := make([]byte, 32)
-	for {
-		_, err := connection.Write([]byte("OK\n"))
-		if err != nil {
-			fmt.Printf("Ошибка отправки клиенту: %v\n", err)
-			return
-		}
-		_, err = connection.Read(response)
-		if err != nil {
-			fmt.Printf("Клиент отключился или ошибка сети")
-			return
-		}
+	_, err := connection.Write([]byte("OK\n"))
+	if err != nil {
+		fmt.Printf("Ошибка отправки клиенту: %v\n", err)
+		return
 	}
 }
 
