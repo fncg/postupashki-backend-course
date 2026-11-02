@@ -1,9 +1,11 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -25,6 +27,12 @@ func (s *Sender) SendRequests(ctx context.Context) <- chan http.Response{
 	for _, url := range s.urls {
 		go func(targetURL string){
 			response, err := httpGetRequest(ctxWithCancel, targetURL)
+			if err != nil {
+				return
+			}
+			body, err := io.ReadAll(response.Body)
+			response.Body.Close()
+			response.Body = io.NopCloser(bytes.NewReader(body))
 			if err != nil {
 				return
 			}
